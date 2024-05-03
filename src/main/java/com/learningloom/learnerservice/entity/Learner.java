@@ -21,9 +21,10 @@ import java.util.concurrent.CompletableFuture;
 public class Learner {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+//    private Long userId;
 //    @Column(nullable = false)
 //    private String firstName;
 //
@@ -36,8 +37,9 @@ public class Learner {
     @Column(unique = true, nullable = false)
     private String email;
 
+
     @Column(nullable = false)
-    private String password;
+    private String cardNumber;
 
 //    @ElementCollection  // to create a separate table for the list of enrolled courses
 //    private List<Long> enrolledCourseIds;

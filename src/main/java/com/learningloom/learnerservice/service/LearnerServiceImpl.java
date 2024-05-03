@@ -41,11 +41,13 @@ public class LearnerServiceImpl implements LearnerService{
         try{
 
             Learner learner = new Learner();
+            learner.setId(learnerDto.getId());
             learner.setName(learnerDto.getName());
 //            learner.setFirstName(learnerDto.getFirstName());
 //            learner.setLastName(learnerDto.getLastName());
             learner.setEmail(learnerDto.getEmail());
-            learner.setPassword(learnerDto.getPassword());
+            learner.setCardNumber(learnerDto.getCardNumber());
+//            learner.setPassword(learnerDto.getPassword());
             learner.setEnrolledCourses(new HashMap<>());
             learner.setCompletedCourses(new HashMap<>()); // Initialize the completed courses map
             learner.setInProgressCourses(new HashMap<>()); // Initialize the in-progress courses map
