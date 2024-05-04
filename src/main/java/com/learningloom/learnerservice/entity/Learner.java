@@ -1,7 +1,7 @@
 package com.learningloom.learnerservice.entity;
 
 
-//import com.learningloom.learnerservice.service.CourseClient;
+//import com.learningloom.learnerservice.feign.CourseClient;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

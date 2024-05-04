@@ -5,12 +5,12 @@ import com.learningloom.learnerservice.dto.LearnerDto;
 import com.learningloom.learnerservice.entity.Course;
 import com.learningloom.learnerservice.entity.CourseInfo;
 import com.learningloom.learnerservice.entity.Learner;
+import com.learningloom.learnerservice.feign.CourseClient;
+import com.learningloom.learnerservice.feign.NotificationClient;
 import com.learningloom.learnerservice.repository.LearnerRepository;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,6 +24,9 @@ public class LearnerServiceImpl implements LearnerService{
 
     @Autowired
     private CourseClient courseClient;
+
+    @Autowired
+    private NotificationClient notificationClient;
 
 
     @Override
@@ -79,6 +82,8 @@ public class LearnerServiceImpl implements LearnerService{
         learner.getEnrolledCourses().put(courseId, courseInfo);
         learner.getInProgressCourses().put(courseId, course.getName()); // Add the course to the in-progress courses map
         learnerRepository.save(learner);
+//        TODO: change method implementation to send 2 params, one for email and one for course name.
+//        notificationClient.sendEmail(learner.getEmail(), course.getName());
     }
 
     public void cancelCourseEnrollment(Long learnerId, Long courseId) {

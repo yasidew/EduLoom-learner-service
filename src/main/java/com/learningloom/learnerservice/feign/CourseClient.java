@@ -1,4 +1,4 @@
-package com.learningloom.learnerservice.service;
+package com.learningloom.learnerservice.feign;
 
 
 import com.learningloom.learnerservice.entity.Course;
@@ -16,8 +16,5 @@ public interface CourseClient {
 
     @GetMapping("/api/instructor/courses")
     List<Course> getAllCourses();
-
-
-
 
 }
