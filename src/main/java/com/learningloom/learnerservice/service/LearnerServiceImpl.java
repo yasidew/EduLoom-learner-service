@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LearnerServiceImpl implements LearnerService{
@@ -89,6 +90,7 @@ public class LearnerServiceImpl implements LearnerService{
         }
 
         learner.getEnrolledCourses().remove(courseId);
+        learner.getInProgressCourses().remove(courseId);
         learnerRepository.save(learner);
     }
 
@@ -158,7 +160,35 @@ public class LearnerServiceImpl implements LearnerService{
 //        learnerRepository.save(learner);
 //    }
 
+    public List<Course> getInProgressCourses(Long learnerId) {
+        Learner learner = learnerRepository.findById(learnerId)
+                .orElseThrow(() -> new RuntimeException("Learner not found with ID: " + learnerId));
+        return learner.getInProgressCourses().entrySet().stream()
+                .map(entry -> convertToCourse(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
+    }
 
+    private Course convertToCourse(Long courseId, String courseName) {
+        Course course = new Course();
+        course.setId(courseId);
+        course.setName(courseName);
+        // As the price is not available in the inProgressCourses map, we can't set it here
+        return course;
+    }
+
+    public void completeCourse(Long learnerId, Long courseId) {
+        Learner learner = learnerRepository.findById(learnerId)
+                .orElseThrow(() -> new RuntimeException("Learner not found with id: " + learnerId));
+
+        if (!learner.getEnrolledCourses().containsKey(courseId)) {
+            throw new RuntimeException("Learner is not enrolled in the course");
+        }
+
+        String courseName = learner.getEnrolledCourses().get(courseId).getName();
+        learner.getInProgressCourses().remove(courseId);
+        learner.getCompletedCourses().put(courseId, courseName);
+        learnerRepository.save(learner);
+    }
 
 
 }

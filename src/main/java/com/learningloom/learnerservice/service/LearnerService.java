@@ -23,4 +23,8 @@ public interface LearnerService {
      int getInProgressCourseCount(Long learnerId);
 
      List<Course> getAllCourses();
+
+    List<Course> getInProgressCourses(Long learnerId);
+
+    void completeCourse(Long learnerId, Long courseId);
 }

@@ -2,6 +2,7 @@ package com.learningloom.learnerservice.controller;
 
 
 import com.learningloom.learnerservice.dto.LearnerDto;
+import com.learningloom.learnerservice.entity.Course;
 import com.learningloom.learnerservice.entity.Learner;
 import com.learningloom.learnerservice.service.LearnerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +12,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("api/v1/learners")
 public class LearnerController {
 
@@ -42,9 +44,8 @@ public class LearnerController {
         }
     }
 
-    @PostMapping("/{learnerId}/enroll")
-    //void is used because we are not returning any response body
-    public ResponseEntity<Void> enrollCourse(@PathVariable Long learnerId, @RequestParam Long courseId){ // @RequestParam is used to get the value of the query parameter courseId
+    @PostMapping("/{learnerId}/enroll/{courseId}")
+    public ResponseEntity<Void> enrollCourse(@PathVariable Long learnerId, @PathVariable Long courseId){
         try{
             if(learnerId == null || courseId == null){
                 throw new IllegalArgumentException("Learner ID and Course ID cannot be null");
@@ -54,13 +55,11 @@ public class LearnerController {
 
         }catch(Exception e){
             return ResponseEntity.badRequest().build();
-
         }
-
     }
 
-    @DeleteMapping("/{learnerId}/unenroll")
-    public ResponseEntity<Void> cancelCourseEnrollment(@PathVariable Long learnerId, @RequestParam Long courseId){
+    @DeleteMapping("/{learnerId}/unenroll/{courseId}")
+    public ResponseEntity<Void> cancelCourseEnrollment(@PathVariable Long learnerId, @PathVariable Long courseId){
         try{
             if(learnerId == null || courseId == null){
                 throw new IllegalArgumentException(" Learner ID and Course ID cannot be null");
@@ -155,6 +154,37 @@ public class LearnerController {
 //            return ResponseEntity.badRequest().build();
 //        }
 //    }
+
+
+    @GetMapping("/{learnerId}/inProgressCourses")
+    public ResponseEntity<List<Course>> getInProgressCourses(@PathVariable Long learnerId) {
+        try {
+            if (learnerId == null) {
+                return ResponseEntity.badRequest().body(null);
+            }
+
+            List<Course> inProgressCourses = learnerService.getInProgressCourses(learnerId);
+            return ResponseEntity.ok(inProgressCourses);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @PostMapping("/{learnerId}/complete/{courseId}")
+    public ResponseEntity<Void> completeCourse(@PathVariable Long learnerId, @PathVariable Long courseId){
+        try{
+            if(learnerId == null || courseId == null){
+                throw new IllegalArgumentException("Learner ID and Course ID cannot be null");
+            }
+            learnerService.completeCourse(learnerId, courseId);
+            return ResponseEntity.ok().build();
+
+        }catch(Exception e){
+            return ResponseEntity.badRequest().build();
+        }
+    }
 
 
 
