@@ -5,9 +5,7 @@ import com.learningloom.learnerservice.dto.LearnerDto;
 import com.learningloom.learnerservice.entity.Course;
 import com.learningloom.learnerservice.entity.CourseInfo;
 import com.learningloom.learnerservice.entity.Learner;
-import com.learningloom.learnerservice.entity.Notification;
 import com.learningloom.learnerservice.feign.CourseClient;
-import com.learningloom.learnerservice.feign.NotificationClient;
 import com.learningloom.learnerservice.repository.LearnerRepository;
 import com.learningloom.learnerservice.service.LearnerService;
 import com.learningloom.learnerservice.service.NotificationService;
@@ -28,13 +26,8 @@ public class LearnerServiceImpl implements LearnerService {
     @Autowired
     private CourseClient courseClient;
 
-//    @Autowired
-//    private NotificationService notificationService;
-
     @Autowired
-    private NotificationClient notificationClient;
-
-
+    private NotificationService notificationService;
 
 
     @Override
@@ -55,11 +48,8 @@ public class LearnerServiceImpl implements LearnerService {
             Learner learner = new Learner();
             learner.setId(learnerDto.getId());
             learner.setName(learnerDto.getName());
-//            learner.setFirstName(learnerDto.getFirstName());
-//            learner.setLastName(learnerDto.getLastName());
             learner.setEmail(learnerDto.getEmail());
             learner.setCardNumber(learnerDto.getCardNumber());
-//            learner.setPassword(learnerDto.getPassword());
             learner.setEnrolledCourses(new HashMap<>());
             learner.setCompletedCourses(new HashMap<>()); // Initialize the completed courses map
             learner.setInProgressCourses(new HashMap<>()); // Initialize the in-progress courses map
@@ -91,13 +81,15 @@ public class LearnerServiceImpl implements LearnerService {
         learner.getInProgressCourses().put(courseId, course.getName()); // Add the course to the in-progress courses map
         learnerRepository.save(learner);
 
-        // Send notification to the learner
-        Notification notification = new Notification();
-        notification.setToEmail(learner.getEmail());
-        notification.setCourseId(courseId.toString());
-        notification.setCourseName(course.getName());
-        notificationClient.sendEmail(notification);
-//        notificationService.sendNotification(learner.getEmail(), courseId.toString(), course.getName());
+        try {
+            notificationService.sendNotification(
+                    learner.getEmail(),
+                    courseId.toString(),
+                    course.getName()
+            );
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to send notification", e);
+        }
     }
 
     public void cancelCourseEnrollment(Long learnerId, Long courseId) {

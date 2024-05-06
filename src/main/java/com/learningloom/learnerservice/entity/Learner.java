@@ -1,17 +1,13 @@
 package com.learningloom.learnerservice.entity;
 
 
-//import com.learningloom.learnerservice.feign.CourseClient;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ManyToAny;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 @Entity
 @Data
@@ -53,7 +49,4 @@ public class Learner {
 
     @ElementCollection
     private Map<Long, String> inProgressCourses = new HashMap<>();
-
-
-
 }

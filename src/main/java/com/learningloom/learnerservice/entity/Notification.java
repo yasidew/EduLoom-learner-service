@@ -7,8 +7,9 @@ import lombok.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Embeddable
+@Entity(name = "notifications")
 public class Notification {
+    @Id
     private String id;
     private String toEmail;
     private String courseId;

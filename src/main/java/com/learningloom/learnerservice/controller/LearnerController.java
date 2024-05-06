@@ -4,7 +4,8 @@ package com.learningloom.learnerservice.controller;
 import com.learningloom.learnerservice.dto.LearnerDto;
 import com.learningloom.learnerservice.entity.Course;
 import com.learningloom.learnerservice.entity.Learner;
-import com.learningloom.learnerservice.service.LearnerServiceImpl;
+import com.learningloom.learnerservice.service.NotificationService;
+import com.learningloom.learnerservice.service.impl.LearnerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,6 @@ public class LearnerController {
 
     @Autowired
     private LearnerServiceImpl learnerService;
-
 
     @PostMapping("/register")
     public ResponseEntity<Learner> registerLearner(@RequestBody LearnerDto learnerDto ){
@@ -137,24 +137,6 @@ public class LearnerController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
-
-
-
-//    @GetMapping("/{learnerId}/progress")
-//    public ResponseEntity<String> getLearnerProgress(@PathVariable Long learnerId) {
-//        try {
-//            if (learnerId == null) {
-//                throw new IllegalArgumentException("Learner ID cannot be null");
-//            }
-//            int completedCourses = learnerService.getCompletedCourseCount(learnerId);
-//            int inProgressCourses = learnerService.getInProgressCourseCount(learnerId);
-//            String progress = "Completed Course: " + completedCourses + ", In Progress Course: " + inProgressCourses;
-//            return ResponseEntity.ok(progress);
-//        } catch (Exception e) {
-//            return ResponseEntity.badRequest().build();
-//        }
-//    }
-
 
     @GetMapping("/{learnerId}/inProgressCourses")
     public ResponseEntity<List<Course>> getInProgressCourses(@PathVariable Long learnerId) {
