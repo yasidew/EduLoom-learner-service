@@ -1,13 +1,16 @@
-package com.learningloom.learnerservice.service;
+package com.learningloom.learnerservice.service.impl;
 
 
 import com.learningloom.learnerservice.dto.LearnerDto;
 import com.learningloom.learnerservice.entity.Course;
 import com.learningloom.learnerservice.entity.CourseInfo;
 import com.learningloom.learnerservice.entity.Learner;
+import com.learningloom.learnerservice.entity.Notification;
 import com.learningloom.learnerservice.feign.CourseClient;
 import com.learningloom.learnerservice.feign.NotificationClient;
 import com.learningloom.learnerservice.repository.LearnerRepository;
+import com.learningloom.learnerservice.service.LearnerService;
+import com.learningloom.learnerservice.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class LearnerServiceImpl implements LearnerService{
+public class LearnerServiceImpl implements LearnerService {
 
 
     @Autowired
@@ -25,8 +28,13 @@ public class LearnerServiceImpl implements LearnerService{
     @Autowired
     private CourseClient courseClient;
 
+//    @Autowired
+//    private NotificationService notificationService;
+
     @Autowired
     private NotificationClient notificationClient;
+
+
 
 
     @Override
@@ -82,8 +90,11 @@ public class LearnerServiceImpl implements LearnerService{
         learner.getEnrolledCourses().put(courseId, courseInfo);
         learner.getInProgressCourses().put(courseId, course.getName()); // Add the course to the in-progress courses map
         learnerRepository.save(learner);
-//        TODO: change method implementation to send 2 params, one for email and one for course name.
-//        notificationClient.sendEmail(learner.getEmail(), course.getName());
+
+        // Send notification to the learner
+        Notification notification = new Notification();
+        notificationClient.sendEmail(notification);
+//        notificationService.sendNotification(learner.getEmail(), courseId.toString(), course.getName());
     }
 
     public void cancelCourseEnrollment(Long learnerId, Long courseId) {
@@ -148,23 +159,6 @@ public class LearnerServiceImpl implements LearnerService{
         learnerRepository.save(learner);
     }
 
-
-
-//    public void updatePaymentStatus(Long learnerId, Long courseId) {
-//        Learner learner = learnerRepository.findById(learnerId)
-//                .orElseThrow(() -> new RuntimeException("Learner not found with id: " + learnerId));
-//
-//        if (!learner.getEnrolledCourses().containsKey(courseId)) {
-//            throw new RuntimeException("Learner is not enrolled in the course");
-//        }
-//
-//        CourseInfo courseInfo = learner.getEnrolledCourses().get(courseId);
-//        courseInfo.setPaymentStatus("Paid"); // Update the payment status to "Paid"
-//
-//        // Save the updated learner information
-//        learnerRepository.save(learner);
-//    }
-
     public List<Course> getInProgressCourses(Long learnerId) {
         Learner learner = learnerRepository.findById(learnerId)
                 .orElseThrow(() -> new RuntimeException("Learner not found with ID: " + learnerId));
@@ -194,6 +188,5 @@ public class LearnerServiceImpl implements LearnerService{
         learner.getCompletedCourses().put(courseId, courseName);
         learnerRepository.save(learner);
     }
-
 
 }

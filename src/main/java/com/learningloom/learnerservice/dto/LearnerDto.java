@@ -12,11 +12,8 @@ import lombok.NoArgsConstructor;
 public class LearnerDto {
 
     private Long id;
-//    private Long userId;
     private String name;
-
     private String email;
-
     private String cardNumber;
 
 
