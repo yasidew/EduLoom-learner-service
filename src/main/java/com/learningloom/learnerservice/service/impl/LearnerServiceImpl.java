@@ -93,6 +93,9 @@ public class LearnerServiceImpl implements LearnerService {
 
         // Send notification to the learner
         Notification notification = new Notification();
+        notification.setToEmail(learner.getEmail());
+        notification.setCourseId(courseId.toString());
+        notification.setCourseName(course.getName());
         notificationClient.sendEmail(notification);
 //        notificationService.sendNotification(learner.getEmail(), courseId.toString(), course.getName());
     }
