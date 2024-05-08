@@ -7,7 +7,7 @@ import lombok.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "notifications")
+@Embeddable
 public class Notification {
     @Id
     private String id;

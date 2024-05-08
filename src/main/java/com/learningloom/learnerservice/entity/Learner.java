@@ -49,4 +49,7 @@ public class Learner {
 
     @ElementCollection
     private Map<Long, String> inProgressCourses = new HashMap<>();
+
+//    @Embedded
+//    private Notification notification;
 }

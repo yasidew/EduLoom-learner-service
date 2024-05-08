@@ -4,7 +4,6 @@ package com.learningloom.learnerservice.controller;
 import com.learningloom.learnerservice.dto.LearnerDto;
 import com.learningloom.learnerservice.entity.Course;
 import com.learningloom.learnerservice.entity.Learner;
-import com.learningloom.learnerservice.service.NotificationService;
 import com.learningloom.learnerservice.service.impl.LearnerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
