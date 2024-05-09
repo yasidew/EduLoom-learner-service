@@ -25,7 +25,7 @@ jobs:
         server-password: MAVEN_PASSWORD
         
     - name: Building and Pushing learner-service
-      run: mvn package dockerfile:push --file learnerservice/pom.xml
+      run: mvn package dockerfile:push --file learner-service/pom.xml
       env:
         MAVEN_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         MAVEN_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
