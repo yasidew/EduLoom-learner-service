@@ -15,7 +15,7 @@ public class LearnerDto {
     private String name;
     private String email;
     private String cardNumber;
-    //learner dto
+
 
 
 }
