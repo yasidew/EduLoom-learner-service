@@ -5,10 +5,11 @@ import com.learningloom.learnerservice.dto.LearnerDto;
 import com.learningloom.learnerservice.entity.Course;
 import com.learningloom.learnerservice.entity.CourseInfo;
 import com.learningloom.learnerservice.entity.Learner;
+import com.learningloom.learnerservice.entity.Notification;
 import com.learningloom.learnerservice.feign.CourseClient;
+import com.learningloom.learnerservice.feign.NotificationClient;
 import com.learningloom.learnerservice.repository.LearnerRepository;
 import com.learningloom.learnerservice.service.LearnerService;
-import com.learningloom.learnerservice.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,7 @@ public class LearnerServiceImpl implements LearnerService {
     private CourseClient courseClient;
 
     @Autowired
-    private NotificationService notificationService;
+    private NotificationClient notificationClient;
 
 
     @Override
@@ -82,12 +83,14 @@ public class LearnerServiceImpl implements LearnerService {
         learner.getInProgressCourses().put(courseId, course.getName()); // Add the course to the in-progress courses map
         learnerRepository.save(learner);
 
+        // Send notification to the learner
         try {
-            notificationService.sendNotification(
-                    learner.getEmail(),
-                    courseId.toString(),
-                    course.getName()
-            );
+            Notification notification = new Notification();
+            notification.setToEmail(learner.getEmail());
+            notification.setCourseId(courseId.toString());
+            notification.setCourseName(course.getName());
+
+            notificationClient.sendEmail(notification);
         } catch (Exception e) {
             throw new RuntimeException("Failed to send notification", e);
         }
