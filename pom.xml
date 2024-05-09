@@ -16,6 +16,7 @@
 	<properties>
 		<java.version>17</java.version>
 		<spring-cloud.version>2023.0.0</spring-cloud.version>
+		<docker.image.prefix>your-docker-hub-username</docker.image.prefix>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -91,7 +92,29 @@
 	</dependencyManagement>
 
 	<build>
+		<finalName>learner-service-docker</finalName>
 		<plugins>
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>dockerfile-maven-plugin</artifactId>
+				<version>1.4.13</version>
+				<executions>
+					<execution>
+						<id>default</id>
+						<goals>
+							<goal>build</goal>
+							<goal>push</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<repository>${docker.image.prefix}/${project.artifactId}</repository>
+					<tag>${project.version}</tag>
+					<buildArgs>
+						<JAR_FILE>target/learner-service-docker.jar</JAR_FILE>
+					</buildArgs>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -105,7 +128,6 @@
 				</configuration>
 			</plugin>
 		</plugins>
-		<finalName>learner-service-docker</finalName>
 	</build>
 
 </project>
