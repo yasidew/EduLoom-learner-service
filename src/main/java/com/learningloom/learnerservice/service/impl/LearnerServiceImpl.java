@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -181,6 +182,26 @@ public class LearnerServiceImpl implements LearnerService {
         String courseName = learner.getEnrolledCourses().get(courseId).getName();
         learner.getInProgressCourses().remove(courseId);
         learner.getCompletedCourses().put(courseId, courseName);
+        learnerRepository.save(learner);
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public Map<Long, CourseInfo> getEnrolledCourses(Long learnerId) {
+        Learner learner = learnerRepository.findById(learnerId).orElse(null);
+        if (learner != null) {
+            return learner.getEnrolledCourses();
+        } else {
+            return null;
+        }
+    }
+
+    public void updateAllPaymentStatus(Long learnerId) {
+        Learner learner = learnerRepository.findById(learnerId)
+                .orElseThrow(() -> new RuntimeException("Learner not found with id: " + learnerId));
+        learner.getEnrolledCourses().forEach((courseId, courseInfo) -> courseInfo.setPaymentStatus("Paid"));
         learnerRepository.save(learner);
     }
 

@@ -3,6 +3,7 @@ package com.learningloom.learnerservice.controller;
 
 import com.learningloom.learnerservice.dto.LearnerDto;
 import com.learningloom.learnerservice.entity.Course;
+import com.learningloom.learnerservice.entity.CourseInfo;
 import com.learningloom.learnerservice.entity.Learner;
 import com.learningloom.learnerservice.service.NotificationService;
 import com.learningloom.learnerservice.service.impl.LearnerServiceImpl;
@@ -45,7 +46,7 @@ public class LearnerController {
     }
 
     @PostMapping("/{learnerId}/enroll/{courseId}")
-    public ResponseEntity<Void> enrollCourse(@PathVariable Long learnerId, @PathVariable Long courseId){
+    public ResponseEntity<String> enrollCourse(@PathVariable Long learnerId, @PathVariable Long courseId){
         try{
             if(learnerId == null || courseId == null){
                 throw new IllegalArgumentException("Learner ID and Course ID cannot be null");
@@ -54,7 +55,7 @@ public class LearnerController {
             return ResponseEntity.ok().build();
 
         }catch(Exception e){
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -165,6 +166,28 @@ public class LearnerController {
 
         }catch(Exception e){
             return ResponseEntity.badRequest().build();
+        }
+    }
+
+
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    @PutMapping("/updatePaymentStatus/{learnerId}")
+    public void updatePaymentStatus(@PathVariable Long learnerId) {
+        learnerService.updateAllPaymentStatus(learnerId);
+    }
+
+
+    @GetMapping("/{learnerId}/courses")
+    public ResponseEntity<Map<Long, CourseInfo>> getEnrolledCourses(@PathVariable Long learnerId) {
+        Map<Long, CourseInfo> enrolledCourses = learnerService.getEnrolledCourses(learnerId);
+        if (enrolledCourses.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } else {
+            return ResponseEntity.ok(enrolledCourses);
         }
     }
 

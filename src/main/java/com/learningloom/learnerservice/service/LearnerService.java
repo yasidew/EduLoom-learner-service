@@ -2,9 +2,11 @@ package com.learningloom.learnerservice.service;
 
 import com.learningloom.learnerservice.dto.LearnerDto;
 import com.learningloom.learnerservice.entity.Course;
+import com.learningloom.learnerservice.entity.CourseInfo;
 import com.learningloom.learnerservice.entity.Learner;
 
 import java.util.List;
+import java.util.Map;
 
 public interface LearnerService {
 
@@ -27,4 +29,10 @@ public interface LearnerService {
     List<Course> getInProgressCourses(Long learnerId);
 
     void completeCourse(Long learnerId, Long courseId);
+
+
+    ///////////////////////////////////////////////////////////
+
+    Map<Long, CourseInfo> getEnrolledCourses(Long learnerId);
+    void updateAllPaymentStatus(Long learnerId);
 }
