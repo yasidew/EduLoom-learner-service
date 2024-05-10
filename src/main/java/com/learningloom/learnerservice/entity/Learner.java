@@ -17,15 +17,7 @@ import java.util.Map;
 public class Learner {
 
     @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-//    private Long userId;
-//    @Column(nullable = false)
-//    private String firstName;
-//
-//    @Column(nullable = false)
-//    private String lastName;
 
     @Column(nullable = false)
     private String name;
@@ -33,12 +25,9 @@ public class Learner {
     @Column(unique = true, nullable = false)
     private String email;
 
-
     @Column(nullable = false)
     private String cardNumber;
 
-//    @ElementCollection  // to create a separate table for the list of enrolled courses
-//    private List<Long> enrolledCourseIds;
 
     @ElementCollection
     private Map<Long, CourseInfo> enrolledCourses = new HashMap<>();
@@ -49,7 +38,4 @@ public class Learner {
 
     @ElementCollection
     private Map<Long, String> inProgressCourses = new HashMap<>();
-
-//    @Embedded
-//    private Notification notification;
 }

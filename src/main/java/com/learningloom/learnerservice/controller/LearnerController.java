@@ -170,10 +170,6 @@ public class LearnerController {
 
 
 
-
-
-    ////////////////////////////////////////////////////////////////////////////////////
-
     @PutMapping("/updatePaymentStatus/{learnerId}")
     public void updatePaymentStatus(@PathVariable Long learnerId) {
         learnerService.updateAllPaymentStatus(learnerId);
