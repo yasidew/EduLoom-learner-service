@@ -10,6 +10,7 @@ import com.learningloom.learnerservice.feign.CourseClient;
 import com.learningloom.learnerservice.feign.NotificationClient;
 import com.learningloom.learnerservice.repository.LearnerRepository;
 import com.learningloom.learnerservice.service.LearnerService;
+import com.learningloom.learnerservice.util.EncryptionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,10 +39,25 @@ public class LearnerServiceImpl implements LearnerService {
     }
 
 
+//    @Override
+//    public Learner getLearnerById(Long learnerId) {
+//        return learnerRepository.findById(learnerId)
+//                .orElseThrow(() -> new RuntimeException("Learner not found with ID: " + learnerId));
+//    }
+
     @Override
     public Learner getLearnerById(Long learnerId) {
-        return learnerRepository.findById(learnerId)
+        Learner learner =  learnerRepository.findById(learnerId)
                 .orElseThrow(() -> new RuntimeException("Learner not found with ID: " + learnerId));
+        try{
+            String decryptedCardNumber = EncryptionUtil.decrypt(learner.getCardNumber());
+            String maskedCardNumber =  decryptedCardNumber.substring(0, decryptedCardNumber.length()-4).replaceAll(".", "*")
+                    +decryptedCardNumber.substring(decryptedCardNumber.length()-4);
+            learner.setCardNumber(maskedCardNumber);
+        }catch(Exception e){
+            throw new RuntimeException("Failed to decrypt card number", e);
+        }
+        return learner;
     }
 
     public Learner registerLearner(LearnerDto learnerDto){
@@ -51,7 +67,9 @@ public class LearnerServiceImpl implements LearnerService {
             learner.setId(learnerDto.getId());
             learner.setName(learnerDto.getName());
             learner.setEmail(learnerDto.getEmail());
-            learner.setCardNumber(learnerDto.getCardNumber());
+            String encryptedCardNumber = EncryptionUtil.encrypt(learnerDto.getCardNumber());
+            learner.setCardNumber(encryptedCardNumber);
+//            learner.setCardNumber(learnerDto.getCardNumber());
             learner.setEnrolledCourses(new HashMap<>());
             learner.setCompletedCourses(new HashMap<>()); // Initialize the completed courses map
             learner.setInProgressCourses(new HashMap<>()); // Initialize the in-progress courses map

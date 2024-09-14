@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Optional;
 
-@FeignClient(name = "notificationservice", url = "http://localhost:8082/api/v1/notifications")
+@FeignClient(name = "notificationservice", url = "http://localhost:8081/api/v1/notifications")
 public interface NotificationClient {
 
     @PostMapping("/send-email")

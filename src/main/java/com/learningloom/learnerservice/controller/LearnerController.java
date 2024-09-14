@@ -6,11 +6,15 @@ import com.learningloom.learnerservice.entity.Course;
 import com.learningloom.learnerservice.entity.CourseInfo;
 import com.learningloom.learnerservice.entity.Learner;
 import com.learningloom.learnerservice.service.impl.LearnerServiceImpl;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.HtmlUtils;
+//import org.springframework.security.web.csrf.CsrfToken;
 
+import javax.validation.Valid;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -24,11 +28,22 @@ public class LearnerController {
     @Autowired
     private LearnerServiceImpl learnerService;
 
+//    @GetMapping("/csrf-token")
+//    public Map<String, String> getCsrfToken(HttpServletRequest request) {
+//        CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
+//        return Collections.singletonMap("token", csrfToken.getToken());
+//    }
     @PostMapping("/register")
-    public ResponseEntity<Learner> registerLearner(@RequestBody LearnerDto learnerDto ){
+    public ResponseEntity<Learner> registerLearner(@Valid @RequestBody LearnerDto learnerDto ){
+        // Sanitize user input AFTER validation
+        learnerDto.setName(HtmlUtils.htmlEscape(learnerDto.getName()));
+        learnerDto.setEmail(HtmlUtils.htmlEscape(learnerDto.getEmail()));
+        learnerDto.setCardNumber(HtmlUtils.htmlEscape(learnerDto.getCardNumber()));
+
         Learner registeredLearner = learnerService.registerLearner(learnerDto);
         return new ResponseEntity<>(registeredLearner, HttpStatus.CREATED);
     }
+
 
 
     @GetMapping("/{learnerId}")
